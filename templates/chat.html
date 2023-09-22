@@ -1,0 +1,39 @@
+
+{% load static %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-4">
+      <h3>Online users</h3>
+      <ul class="list-group">
+        {% for user in online_users %}
+        <li class="list-group-item">
+          <a href="{% url 'chat' %}?user={{ user.id }}">{{ user.username }}</a>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="col-md-8">
+      <h3>Chat with {{ selected_user.username }}</h3>
+      <div class="chat-box">
+        {% for message in messages %}
+        <div class="chat-message {% if message.sender == user %}chat-message-right{% endif %}">
+          <div class="chat-message-content">
+            <span class="chat-message-user">{{ message.sender.username }}</span>
+            <span class="chat-message-text">{{ message.content }}</span>
+            <span class="chat-message-time">{{ message.timestamp }}</span>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <form method="post" class="chat-form">
+        {% csrf_token %}
+        <input type="hidden" name="receiver" value="{{ selected_user.id }}">
+        <input type="text" name="content" class="chat-input" placeholder="Type a message...">
+        <button type="submit" class="chat-button">Send</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
